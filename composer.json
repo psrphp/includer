@@ -1,0 +1,11 @@
+{
+    "name": "psrphp/includer",
+    "description": "php include from stream wrappers",
+    "type": "library",
+    "license": "GPL-3.0",
+    "autoload": {
+        "psr-4": {
+            "PsrPHP\\Includer\\": "src/"
+        }
+    }
+}
