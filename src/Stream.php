@@ -8,13 +8,14 @@ class Stream
 {
     private $position;
     private $varname;
+    private static $datas = [];
 
     public function stream_open($path)
     {
         $url = parse_url($path);
-        $this->varname = $url["host"];
-        if (!isset($GLOBALS[$this->varname])) {
-            $GLOBALS[$this->varname] = '';
+        $this->varname = $url['host'];
+        if (!isset(self::$datas[$this->varname])) {
+            self::$datas[$this->varname] = '';
         }
         $this->position = 0;
         return true;
@@ -23,14 +24,14 @@ class Stream
     public function stream_read($count)
     {
         $p = &$this->position;
-        $ret = substr($GLOBALS[$this->varname], $p, $count);
+        $ret = substr(self::$datas[$this->varname], $p, $count);
         $p += strlen($ret);
         return $ret;
     }
 
     public function stream_write($data)
     {
-        $v = &$GLOBALS[$this->varname];
+        $v = &self::$datas[$this->varname];
         $l = strlen($data);
         $p = &$this->position;
         $v = substr($v, 0, $p) . $data . substr($v, $p += $l);
@@ -44,12 +45,12 @@ class Stream
 
     public function stream_eof()
     {
-        return $this->position >= strlen($GLOBALS[$this->varname]);
+        return $this->position >= strlen(self::$datas[$this->varname]);
     }
 
     public function stream_seek($offset, $whence)
     {
-        $l = strlen($GLOBALS[$this->varname]);
+        $l = strlen(self::$datas[$this->varname]);
         $p = &$this->position;
         switch ($whence) {
             case SEEK_SET:
